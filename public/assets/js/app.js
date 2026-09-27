@@ -73,3 +73,63 @@ const alertDialog = document.getElementById('app-alert');
 if (alertDialog && alertDialog.dataset.autoOpen === 'true' && typeof alertDialog.showModal === 'function') {
     alertDialog.showModal();
 }
+
+const tablaMediciones = document.getElementById('tabla-mediciones');
+if (tablaMediciones && window.simpleDatatables) {
+    new window.simpleDatatables.DataTable(tablaMediciones, {
+        perPage: 10,
+        perPageSelect: [10, 20, 50],
+        searchable: true,
+        labels: {
+            placeholder: 'Buscar medición...',
+            perPage: 'Registros por página',
+            noRows: 'No hay mediciones para mostrar.',
+            noResults: 'No se encontraron mediciones.',
+            info: 'Mostrando {start} a {end} de {rows} mediciones',
+        },
+    });
+}
+
+const puntoControl = document.getElementById('punto-control');
+if (puntoControl && window.TomSelect) {
+    const selectorPunto = new window.TomSelect(puntoControl, {
+        create: false,
+        allowEmptyOption: true,
+        maxOptions: 200,
+        placeholder: 'Busca y selecciona un punto de control',
+    });
+    selectorPunto.clear(true);
+}
+
+const indicadorRegistro = document.getElementById('indicador-registro');
+const valorMedicion = document.getElementById('valor-medicion');
+const etiquetaValor = document.getElementById('etiqueta-valor');
+const ayudaValor = document.getElementById('ayuda-valor');
+function actualizarCampoMedicion() {
+    if (!indicadorRegistro || !valorMedicion || !etiquetaValor || !ayudaValor) return;
+    const esPresion = indicadorRegistro.value === 'presion';
+    valorMedicion.value = '';
+    valorMedicion.type = esPresion ? 'number' : 'text';
+    valorMedicion.inputMode = esPresion ? 'decimal' : 'numeric';
+    valorMedicion.placeholder = esPresion ? 'Ej. 17.12' : 'Ej. 23:46';
+    valorMedicion.min = esPresion ? '0' : '';
+    valorMedicion.step = esPresion ? '0.01' : '';
+    valorMedicion.pattern = esPresion ? '' : '(?:[01][0-9]|2[0-4]):[0-5][0-9]';
+    etiquetaValor.textContent = esPresion ? 'Presión (m.c.a.)' : 'Continuidad (HH:MM)';
+    ayudaValor.textContent = esPresion ? 'Ingresa un valor igual o mayor que cero.' : 'Desde 00:00 hasta 24:00.';
+}
+if (indicadorRegistro) {
+    indicadorRegistro.addEventListener('change', actualizarCampoMedicion);
+    actualizarCampoMedicion();
+}
+
+const flashMessage = document.getElementById('flash-message');
+if (flashMessage && window.Swal) {
+    window.Swal.fire({
+        icon: flashMessage.dataset.type === 'error' ? 'error' : 'success',
+        title: flashMessage.dataset.type === 'error' ? 'No se pudo completar la acción' : 'Operación realizada',
+        text: flashMessage.dataset.message,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#1768bb',
+    });
+}

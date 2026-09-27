@@ -6,8 +6,13 @@
     <meta name="color-scheme" content="light">
     <title><?= e($title) ?> · GECOPRE</title>
     <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="<?= e(asset('css/inter.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('icons/bootstrap-icons.css')) ?>">
+    <?php foreach ($recursos['css'] as $hojaEstilo): ?><link rel="stylesheet" href="<?= e(asset('css/' . $hojaEstilo)) ?>">
+    <?php endforeach; ?>
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
+    <?php foreach ($recursos['js'] as $script): ?><script defer src="<?= e(asset('js/' . $script)) ?>"></script>
+    <?php endforeach; ?>
     <script defer src="<?= e(asset('js/app.js')) ?>"></script>
 </head>
 <body class="bg-shell font-sans text-slate-700 antialiased">
@@ -48,5 +53,6 @@
 <dialog id="app-alert" class="w-[calc(100%-2rem)] max-w-md rounded-2xl border-0 bg-white p-0 text-slate-700 shadow-xl backdrop:bg-slate-900/40" aria-labelledby="alert-title" aria-describedby="alert-message">
     <div class="p-6"><div class="mb-4 flex size-11 items-center justify-center rounded-full bg-teal-50 text-xl text-teal-700"><i class="bi bi-info-circle" aria-hidden="true"></i></div><h2 id="alert-title" class="text-lg font-semibold text-slate-900">Información</h2><p id="alert-message" class="mt-3 text-sm leading-6"></p><form method="dialog" class="mt-6 flex justify-end"><button class="button-primary">Entendido</button></form></div>
 </dialog>
+<?php if ($mensaje !== null): ?><span id="flash-message" hidden data-type="<?= e($mensaje['tipo']) ?>" data-message="<?= e($mensaje['texto']) ?>"></span><?php endif; ?>
 </body>
 </html>

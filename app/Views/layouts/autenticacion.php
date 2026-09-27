@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($title) ?> · GECOPRE</title>
+    <link rel="stylesheet" href="<?= e(asset('css/inter.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('icons/bootstrap-icons.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
     <script defer src="<?= e(asset('js/app.js')) ?>"></script>

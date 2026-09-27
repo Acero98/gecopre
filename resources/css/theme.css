@@ -2,7 +2,7 @@
 @source "../../public/assets/js";
 
 @theme {
-    --font-sans: "Segoe UI", Arial, sans-serif;
+    --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
     --color-shell: #f3f7fb;
     --color-brand-50: #eff6fc;
     --color-brand-100: #deecf8;
@@ -35,7 +35,7 @@
 }
 
 @layer components {
-    .panel { @apply rounded-xl border border-slate-200 bg-white p-5 sm:p-6; }
+    .panel { @apply rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6; }
     .eyebrow { @apply mb-2 text-[11px] font-semibold tracking-widest text-brand-700; }
     .page-title { @apply text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl; }
     .page-description { @apply mt-2 text-sm leading-6 text-slate-500; }
@@ -47,10 +47,29 @@
     .nav-active { @apply bg-brand-50 text-brand-800 hover:bg-brand-50 hover:text-brand-800; }
     .field { @apply block w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 placeholder:text-slate-400; }
     .field[readonly] { @apply bg-slate-50 text-slate-500; }
-    .form-label { @apply grid gap-2 text-sm font-medium text-slate-700; }
+    .form-label { @apply flex flex-col gap-2 text-sm font-medium text-slate-700; }
     .data-table { @apply w-full border-collapse text-left text-sm; }
     .data-table thead { @apply bg-slate-50 text-xs text-slate-500; }
     .data-table th, .data-table td { @apply whitespace-nowrap border-b border-slate-100 px-4 py-4; }
+    .metric-card { @apply relative overflow-hidden rounded-xl border p-4 shadow-sm; }
+    .metric-card:nth-child(1) { @apply border-brand-200 bg-brand-50; }
+    .metric-card:nth-child(2) { @apply border-emerald-200 bg-emerald-50; }
+    .metric-card:nth-child(3) { @apply border-rose-200 bg-rose-50; }
+    .metric-card:nth-child(4) { @apply border-violet-200 bg-violet-50; }
+    .metric-label { @apply text-sm font-medium text-slate-600; }
+    .metric-value { @apply mt-2 text-2xl font-bold tracking-tight text-slate-900; }
+    .metric-help { @apply mt-1 text-xs text-slate-500; }
+    .metric-heading { @apply flex items-center justify-between gap-3; }
+    .metric-icon { @apply flex size-10 items-center justify-center rounded-lg text-lg; }
+    .metric-card:nth-child(1) .metric-label { color: #1768bb; }
+    .metric-card:nth-child(1) .metric-icon { background: #deecf8; color: #1768bb; }
+    .metric-card:nth-child(2) .metric-label { color: #059669; }
+    .metric-card:nth-child(2) .metric-icon { background: #d1fae5; color: #059669; }
+    .metric-card:nth-child(3) .metric-label { color: #e11d48; }
+    .metric-card:nth-child(3) .metric-icon { background: #ffe4e6; color: #e11d48; }
+    .metric-card:nth-child(4) .metric-label { color: #7c3aed; }
+    .metric-card:nth-child(4) .metric-icon { background: #ede9fe; color: #7c3aed; }
+    .connection-card { @apply rounded-xl border border-brand-100 bg-brand-50/50 p-4 transition hover:-translate-y-0.5 hover:shadow-sm; }
     .app-shell { grid-template-columns: 248px minmax(0, 1fr); }
     .brand-logo { display: block; width: 168px; height: 42px; overflow: hidden; flex: 0 1 auto; }
     .brand-logo img { display: block; width: 168px; max-width: none; height: 42px; object-fit: fill; }
@@ -66,6 +85,16 @@
     .nav-collapsed .brand-mark { display: block; width: 44px; height: 42px; flex: 0 0 44px; background-image: var(--brand-logo-url); background-size: 420% 100%; background-position: left center; background-repeat: no-repeat; }
     .nav-collapsed .nav-section-label, .nav-collapsed .nav-label, .nav-collapsed .sidebar-footer { display: none !important; }
     .nav-collapsed .nav-item { justify-content: center; padding-inline: 0; }
+    .datatable-top, .datatable-bottom { padding: 1rem 0; color: #64748b; font-size: .875rem; }
+    .datatable-input, .datatable-selector { border: 1px solid #c2dcf1; border-radius: .5rem; background: #fff; color: #334155; padding: .55rem .75rem; font: inherit; }
+    .datatable-input:focus, .datatable-selector:focus { outline: 2px solid #1768bb; outline-offset: 2px; }
+    .datatable-pagination a, .datatable-pagination button { border-radius: .45rem; color: #12579d; }
+    .datatable-pagination .datatable-active a, .datatable-pagination .datatable-active button { background: #eff6fc; color: #164879; }
+    .datatable-pagination a:hover, .datatable-pagination button:hover { background: #deecf8; }
+    .ts-wrapper.single .ts-control, .ts-wrapper.multi .ts-control { border: 1px solid #e2e8f0; border-radius: .5rem; box-shadow: none; min-height: 42px; padding: .55rem .75rem; font: inherit; }
+    .ts-wrapper.focus .ts-control { border-color: #1768bb; box-shadow: 0 0 0 2px rgb(23 104 187 / .15); }
+    .ts-dropdown { border-color: #c2dcf1; border-radius: .5rem; font: inherit; }
+    .ts-dropdown .active { background: #eff6fc; color: #164879; }
 }
 
 @media (max-width: 1023px) {

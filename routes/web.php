@@ -4,6 +4,7 @@ declare(strict_types=1);
 use App\Controladores\AutenticacionController;
 use App\Controllers\ResumenController;
 use App\Controllers\ModuloController;
+use App\Controllers\RegistroController;
 
 $router->get('/instalacion', [AutenticacionController::class, 'instalacion']);
 $router->post('/instalacion', [AutenticacionController::class, 'crearAdministrador']);
@@ -13,6 +14,7 @@ $router->post('/salir', [AutenticacionController::class, 'salir'], true);
 $router->get('/', [ResumenController::class, 'index'], true);
 $router->get('/resultados', [ResumenController::class, 'results'], true);
 $router->get('/registros', [ModuloController::class, 'records'], true);
+$router->post('/registros', [RegistroController::class, 'guardar'], true);
 $router->get('/conexiones', [ModuloController::class, 'connections'], true);
 $router->get('/revision', [ModuloController::class, 'review'], true);
 $router->get('/predicciones', [ModuloController::class, 'forecasts'], true);

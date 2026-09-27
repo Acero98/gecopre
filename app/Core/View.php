@@ -16,6 +16,7 @@ final class View
         $mensaje = \App\Core\Sesion::tomarMensaje();
         $tokenFormulario = \App\Core\ProteccionFormulario::token();
         extract($data, EXTR_SKIP);
+        $recursos = $data['recursos'] ?? ['css' => [], 'js' => []];
         $navigation = require BASE_PATH . '/config/navegacion.php';
         ob_start();
         require $file;

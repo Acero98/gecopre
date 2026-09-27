@@ -18,6 +18,12 @@ final class ModuloController
             'resumen' => $repositorio->resumen(),
             'registros' => $repositorio->recientes(),
             'conexionesPorPeriodo' => $repositorio->conexionesPorPeriodo(),
+            'puntosControl' => $repositorio->puntosActivos(),
+            'mesPredeterminado' => $repositorio->siguienteMesDisponible(),
+            'recursos' => [
+                'css' => ['simple-datatables.css', 'tom-select.css'],
+                'js' => ['simple-datatables.js', 'tom-select.complete.min.js', 'sweetalert2.all.min.js'],
+            ],
         ]);
     }
 
