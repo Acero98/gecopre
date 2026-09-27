@@ -1,0 +1,20 @@
+<?php
+$meses = [1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril', 5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'];
+?>
+<p class="eyebrow">CAPTURA DE DATOS</p>
+<div class="flex flex-wrap items-end justify-between gap-4"><div><h1 class="page-title">Registro mensual</h1><p class="page-description">Valores históricos importados desde la matriz 2026. Cada período permanece en revisión.</p></div><span class="badge"><i class="bi bi-database-check" aria-hidden="true"></i> Matriz 2026</span></div>
+
+<div class="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <article class="metric-card"><p class="metric-label">Mediciones cargadas</p><p class="metric-value"><?= number_format((int) $resumen['total']) ?></p><p class="metric-help">Registros por punto e indicador</p></article>
+    <article class="metric-card"><p class="metric-label">Continuidad</p><p class="metric-value"><?= number_format((int) $resumen['continuidad']) ?></p><p class="metric-help">Valores en horas por día</p></article>
+    <article class="metric-card"><p class="metric-label">Presión</p><p class="metric-value"><?= number_format((int) $resumen['presion']) ?></p><p class="metric-help">Valores en m.c.a.</p></article>
+    <article class="metric-card"><p class="metric-label">Último período</p><p class="metric-value text-2xl"><?= $resumen['ultimo_periodo'] ? e($meses[(int) substr($resumen['ultimo_periodo'], 5, 2)] . ' ' . substr($resumen['ultimo_periodo'], 0, 4)) : 'Sin datos' ?></p><p class="metric-help">Datos disponibles en la matriz</p></article>
+</div>
+
+<section class="panel mt-6"><div class="mb-5 flex flex-wrap items-center justify-between gap-3"><div><h2 class="section-title">Últimas mediciones cargadas</h2><p class="mt-1 text-sm text-slate-500">Se muestran <?= count($registros) ?> registros del último período disponible.</p></div><a href="<?= e(url('/conexiones')) ?>" class="button-secondary"><i class="bi bi-diagram-3" aria-hidden="true"></i> Ver conexiones</a></div>
+    <div class="overflow-x-auto"><table class="w-full min-w-[720px] text-left text-sm"><thead class="border-y border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th class="px-4 py-3">Período</th><th class="px-4 py-3">Punto</th><th class="px-4 py-3">Sector / zona</th><th class="px-4 py-3">Indicador</th><th class="px-4 py-3 text-right">Valor</th><th class="px-4 py-3">Estado</th></tr></thead><tbody class="divide-y divide-slate-100">
+    <?php foreach ($registros as $registro): ?><tr class="hover:bg-brand-50/40"><td class="px-4 py-3 font-medium text-slate-700"><?= e($meses[(int) $registro['mes']] . ' ' . $registro['anio']) ?></td><td class="px-4 py-3 font-semibold text-slate-800"><?= e($registro['punto']) ?></td><td class="px-4 py-3 text-slate-600"><?= e($registro['sector'] . ' · ' . $registro['zona_presion']) ?></td><td class="px-4 py-3"><?= e($registro['indicador']) ?></td><td class="px-4 py-3 text-right font-semibold text-slate-800"><?= number_format((float) $registro['valor_decimal'], 2) ?> <span class="text-xs font-normal text-slate-500"><?= e($registro['unidad']) ?></span></td><td class="px-4 py-3"><span class="badge"><?= e($registro['estado_dato']) ?></span></td></tr><?php endforeach; ?>
+    </tbody></table></div>
+</section>
+
+<section class="panel mt-6"><h2 class="section-title">Conexiones activas importadas</h2><p class="mt-1 text-sm text-slate-500">Totales mensuales calculados con las 36 zonas de presión incluidas en la matriz.</p><div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7"><?php foreach ($conexionesPorPeriodo as $periodo): ?><div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><p class="text-xs font-medium text-slate-500"><?= e($meses[(int) $periodo['mes']]) ?></p><p class="mt-2 text-lg font-bold text-slate-800"><?= number_format((int) $periodo['conexiones']) ?></p><p class="mt-1 text-xs text-slate-500"><?= (int) $periodo['zonas'] ?> zonas</p></div><?php endforeach; ?></div></section>

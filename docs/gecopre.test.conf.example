@@ -1,0 +1,12 @@
+# Copy as gecopre.test.conf into Laragon's Apache sites-enabled directory.
+# Add 127.0.0.1 gecopre.test to the Windows hosts file and reload Apache.
+<VirtualHost *:80>
+    ServerName gecopre.test
+    DocumentRoot "C:/laragon/www/gecopre/public"
+    <Directory "C:/laragon/www/gecopre/public">
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+

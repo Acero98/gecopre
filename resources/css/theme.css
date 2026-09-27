@@ -1,0 +1,77 @@
+@source "../../app/Views";
+@source "../../public/assets/js";
+
+@theme {
+    --font-sans: "Segoe UI", Arial, sans-serif;
+    --color-shell: #f3f7fb;
+    --color-brand-50: #eff6fc;
+    --color-brand-100: #deecf8;
+    --color-brand-200: #c2dcf1;
+    --color-brand-300: #9cc5e7;
+    --color-brand-400: #70a8d8;
+    --color-brand-500: #3b86c7;
+    --color-brand-600: #1768bb;
+    --color-brand-700: #12579d;
+    --color-brand-800: #164879;
+    --color-brand-900: #183b62;
+    --color-water-100: #e7f8fd;
+    --color-water-300: #9bdfee;
+    --color-water-500: #00afed;
+    --color-water-700: #007fae;
+    --color-water-teal: #3b9ba7;
+    --color-teal-50: #e7f8fd;
+    --color-teal-100: #d1f1f9;
+    --color-teal-600: #008eae;
+    --color-teal-700: #007fae;
+    --color-teal-800: #166986;
+}
+
+@layer base {
+    [hidden] { display: none !important; }
+    body { @apply bg-shell text-slate-700; }
+    button, a, input, select, textarea { @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600; }
+    button, select { cursor: pointer; }
+    dialog { margin: auto; }
+}
+
+@layer components {
+    .panel { @apply rounded-xl border border-slate-200 bg-white p-5 sm:p-6; }
+    .eyebrow { @apply mb-2 text-[11px] font-semibold tracking-widest text-brand-700; }
+    .page-title { @apply text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl; }
+    .page-description { @apply mt-2 text-sm leading-6 text-slate-500; }
+    .section-title { @apply text-base font-semibold text-slate-900; }
+    .badge { @apply inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-800; }
+    .button-primary { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-brand-600 bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-700; }
+    .button-secondary { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50; }
+    .nav-item { @apply flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-800; }
+    .nav-active { @apply bg-brand-50 text-brand-800 hover:bg-brand-50 hover:text-brand-800; }
+    .field { @apply block w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 placeholder:text-slate-400; }
+    .field[readonly] { @apply bg-slate-50 text-slate-500; }
+    .form-label { @apply grid gap-2 text-sm font-medium text-slate-700; }
+    .data-table { @apply w-full border-collapse text-left text-sm; }
+    .data-table thead { @apply bg-slate-50 text-xs text-slate-500; }
+    .data-table th, .data-table td { @apply whitespace-nowrap border-b border-slate-100 px-4 py-4; }
+    .app-shell { grid-template-columns: 248px minmax(0, 1fr); }
+    .brand-logo { display: block; width: 168px; height: 42px; overflow: hidden; flex: 0 1 auto; }
+    .brand-logo img { display: block; width: 168px; max-width: none; height: 42px; object-fit: fill; }
+    .brand-mark { display: none; }
+    .sidebar-toggle { display: inline-flex; width: 36px; height: 36px; flex: 0 0 36px; align-items: center; justify-content: center; border: 1px solid #deecf8; border-radius: 9px; background: #eff6fc; color: #12579d; transition: background-color 150ms ease; }
+    .sidebar-toggle:hover { background: #deecf8; }
+    .app-sidebar { border-color: #deecf8; background: #fff; }
+    .nav-collapsed .app-shell { grid-template-columns: 76px minmax(0, 1fr); }
+    .nav-collapsed .app-sidebar { padding-inline: 0; }
+    .nav-collapsed .app-sidebar > div:first-child { flex-direction: column; padding-inline: 14px; }
+    .nav-collapsed .brand-logo { width: 46px; height: 42px; flex: 0 0 46px; }
+    .nav-collapsed .brand-logo img { display: none; }
+    .nav-collapsed .brand-mark { display: block; width: 44px; height: 42px; flex: 0 0 44px; background-image: var(--brand-logo-url); background-size: 420% 100%; background-position: left center; background-repeat: no-repeat; }
+    .nav-collapsed .nav-section-label, .nav-collapsed .nav-label, .nav-collapsed .sidebar-footer { display: none !important; }
+    .nav-collapsed .nav-item { justify-content: center; padding-inline: 0; }
+}
+
+@media (max-width: 1023px) {
+    .app-shell { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
+}

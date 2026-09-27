@@ -1,0 +1,7 @@
+/node_modules/
+/vendor/
+/.env
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/importaciones/*
+!/storage/importaciones/.gitkeep
