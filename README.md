@@ -1,3 +1,6 @@
+PS C:\laragon\www\gecopre> .\node_modules\.bin\tailwindcss.cmd -i .\resources\css\input.css -o .\public\assets\css\app.css --watch
+≈ tailwindcss v4.3.3
+
 # GECOPRE
 
 Base MVC para continuidad y presión. PHP 8.1+, Tailwind CSS 4 y Bootstrap Icons locales.
