@@ -12,7 +12,12 @@
     <?php foreach (($recursos['css'] ?? []) as $hojaEstilo): ?>
         <link rel="stylesheet" href="<?= e(asset('css/' . $hojaEstilo)) ?>">
     <?php endforeach; ?>
+    <?php foreach (($recursos['css_externos'] ?? []) as $hojaEstilo): ?>
+        <link rel="stylesheet" href="<?= e($hojaEstilo) ?>">
+    <?php endforeach; ?>
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
+    <?php foreach (($recursos['js_externos'] ?? []) as $script): ?><script defer src="<?= e($script) ?>"></script>
+    <?php endforeach; ?>
     <?php foreach (($recursos['js'] ?? []) as $script): ?><script defer src="<?= e(asset('js/' . $script)) ?>"></script>
     <?php endforeach; ?>
     <script defer src="<?= e(asset('js/app.js')) ?>"></script>

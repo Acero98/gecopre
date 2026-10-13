@@ -10,6 +10,7 @@ use App\Controllers\RevisionController;
 use App\Controllers\ResultadoController;
 use App\Controllers\ConfiguracionController;
 use App\Controllers\ReporteController;
+use App\Controllers\MapaPresionController;
 
 $router->get('/instalacion', [AutenticacionController::class, 'instalacion']);
 $router->post('/instalacion', [AutenticacionController::class, 'crearAdministrador']);
@@ -22,6 +23,9 @@ $router->get('/resultados/detalle', [ResultadoController::class, 'detalle'], tru
 $router->get('/reportes/continuidad.csv', [ReporteController::class, 'continuidadCsv'], true);
 $router->get('/reportes/presion.csv', [ReporteController::class, 'presionCsv'], true);
 $router->post('/resultados/calcular', [ResultadoController::class, 'calcular'], true);
+$router->get('/mapa-presion', [MapaPresionController::class, 'index'], true);
+$router->get('/mapa-presion/ubicaciones', [MapaPresionController::class, 'ubicaciones'], true);
+$router->post('/mapa-presion/ubicaciones', [MapaPresionController::class, 'guardarUbicacion'], true);
 $router->get('/registros', [ModuloController::class, 'records'], true);
 $router->post('/registros', [RegistroController::class, 'guardar'], true);
 $router->get('/conexiones', [ModuloController::class, 'connections'], true);

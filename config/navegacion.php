@@ -10,6 +10,7 @@ return [
         ['indicador' => 'continuidad', 'label' => 'Continuidad', 'icon' => 'clock-history'],
         ['indicador' => 'presion', 'label' => 'Presión', 'icon' => 'speedometer2'],
     ]],
+    ['path' => '/mapa-presion', 'label' => 'Mapa de presión', 'icon' => 'map'],
     ['path' => '/predicciones', 'label' => 'Predicciones', 'icon' => 'graph-up-arrow'],
     ['path' => '/configuracion', 'label' => 'Configuración', 'icon' => 'sliders'],
 ];

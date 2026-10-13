@@ -121,6 +121,51 @@ final class RepositorioResultados
         return $consulta->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function evolucionZonasOperativas(string $indicador): array
+    {
+        $consulta = ConexionBaseDatos::obtener()->prepare(
+            "SELECT p.id AS periodo_id, p.anio, p.mes, p.estado, fa.nombre AS fuente_abastecimiento, so.id AS sector_id,
+                    so.nombre AS sector_operacional, zp.id AS zona_id, zp.nombre AS zona_presion,
+                    rc.valor, rc.conexiones_utilizadas, rc.cobertura_esperada, rc.cobertura_obtenida
+             FROM versiones_calculo vc
+             INNER JOIN periodos p ON p.id = vc.periodo_id
+             INNER JOIN indicadores i ON i.id = vc.indicador_id
+             INNER JOIN resultados_calculo rc ON rc.version_calculo_id = vc.id
+             INNER JOIN zonas_presion zp ON zp.id = rc.ambito_id
+             INNER JOIN sectores_operacionales so ON so.id = zp.sector_operacional_id
+             INNER JOIN fuentes_sectores fs ON fs.sector_operacional_id = so.id
+                AND fs.vigente_desde <= LAST_DAY(CONCAT(p.anio, '-', LPAD(p.mes, 2, '0'), '-01'))
+                AND (fs.vigente_hasta IS NULL OR fs.vigente_hasta >= CONCAT(p.anio, '-', LPAD(p.mes, 2, '0'), '-01'))
+             INNER JOIN fuentes_abastecimiento fa ON fa.id = fs.fuente_abastecimiento_id
+             WHERE p.estado IN ('aprobado', 'cerrado') AND i.codigo = :indicador
+               AND rc.tipo_ambito = 'zona_presion' AND rc.valor IS NOT NULL
+               AND vc.numero_version = (
+                   SELECT MAX(vc2.numero_version) FROM versiones_calculo vc2
+                   WHERE vc2.periodo_id = vc.periodo_id AND vc2.indicador_id = vc.indicador_id
+               )
+             ORDER BY p.anio DESC, p.mes DESC, fa.nombre, so.codigo, FIELD(zp.nombre, 'Alta', 'Media', 'Baja')"
+        );
+        $consulta->execute(['indicador' => $indicador]);
+        return $consulta->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function evolucionPuntosControl(string $indicador): array
+    {
+        $consulta = ConexionBaseDatos::obtener()->prepare(
+            "SELECT p.id AS periodo_id, p.anio, p.mes, p.estado AS estado_periodo,
+                    pc.codigo AS punto_control, pc.direccion, rm.valor_decimal AS valor, rm.estado_dato
+             FROM registros_mensuales rm
+             INNER JOIN periodos p ON p.id = rm.periodo_id
+             INNER JOIN indicadores i ON i.id = rm.indicador_id
+             INNER JOIN puntos_control pc ON pc.id = rm.punto_control_id
+             WHERE p.estado IN ('aprobado', 'cerrado') AND i.codigo = :indicador
+               AND rm.valor_decimal IS NOT NULL AND rm.estado_dato = 'registrado'
+             ORDER BY p.anio DESC, p.mes DESC, pc.codigo"
+        );
+        $consulta->execute(['indicador' => $indicador]);
+        return $consulta->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function serieOficial(): array
     {
         $consulta = ConexionBaseDatos::obtener()->query("SELECT p.anio, p.mes, i.codigo AS indicador, rc.valor FROM versiones_calculo vc INNER JOIN periodos p ON p.id = vc.periodo_id INNER JOIN indicadores i ON i.id = vc.indicador_id INNER JOIN resultados_calculo rc ON rc.version_calculo_id = vc.id WHERE p.estado IN ('aprobado', 'cerrado') AND rc.tipo_ambito = 'localidad' AND rc.valor IS NOT NULL AND vc.numero_version = (SELECT MAX(vc2.numero_version) FROM versiones_calculo vc2 WHERE vc2.periodo_id = vc.periodo_id AND vc2.indicador_id = vc.indicador_id) ORDER BY p.anio ASC, p.mes ASC, i.codigo ASC");

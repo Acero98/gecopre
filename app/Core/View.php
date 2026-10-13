@@ -23,6 +23,8 @@ final class View
         $recursos = [
             'css' => array_values(array_unique(array_merge($recursosBase['css'], $recursosVista['css'] ?? []))),
             'js' => array_values(array_unique(array_merge($recursosBase['js'], $recursosVista['js'] ?? []))),
+            'css_externos' => array_values(array_unique($recursosVista['css_externos'] ?? [])),
+            'js_externos' => array_values(array_unique($recursosVista['js_externos'] ?? [])),
         ];
         $navigation = require BASE_PATH . '/config/navegacion.php';
         ob_start();

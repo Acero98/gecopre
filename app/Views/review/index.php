@@ -11,7 +11,63 @@ $nombresEstado = ['borrador' => 'Borrador', 'en_revision' => 'En revisión', 'ap
 
 <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><article class="metric-card"><div class="metric-heading"><p class="metric-label">Borradores</p><span class="metric-icon"><i class="bi bi-pencil-square" aria-hidden="true"></i></span></div><p class="metric-value"><?= $totales['borrador'] ?></p><p class="metric-help">Pendientes de envío</p></article><article class="metric-card"><div class="metric-heading"><p class="metric-label">En revisión</p><span class="metric-icon"><i class="bi bi-search" aria-hidden="true"></i></span></div><p class="metric-value"><?= $totales['en_revision'] ?></p><p class="metric-help">Pendientes de decisión</p></article><article class="metric-card"><div class="metric-heading"><p class="metric-label">Aprobados</p><span class="metric-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></span></div><p class="metric-value"><?= $totales['aprobado'] ?></p><p class="metric-help">Pendientes de cálculo o cierre</p></article><article class="metric-card"><div class="metric-heading"><p class="metric-label">Cerrados</p><span class="metric-icon"><i class="bi bi-lock" aria-hidden="true"></i></span></div><p class="metric-value"><?= $totales['cerrado'] ?></p><p class="metric-help">Resultados definitivos</p></article></div>
 
-<section class="mt-6 space-y-4"><?php foreach ($periodos as $periodo): $tieneResultados = $periodo['resultado_continuidad'] !== null && $periodo['resultado_presion'] !== null; ?><article class="panel period-card periodo-<?= e($periodo['estado']) ?>"><div class="flex flex-wrap items-start justify-between gap-4"><div><div class="flex items-center gap-3"><h2 class="section-title"><?= e($meses[(int) $periodo['mes']] . ' ' . $periodo['anio']) ?></h2><span class="status-chip estado-<?= e($periodo['estado']) ?>"><?= e($nombresEstado[$periodo['estado']]) ?></span></div><p class="mt-2 text-sm text-slate-500">Cobertura registrada para el período.</p></div><div class="grid grid-cols-2 gap-x-6 gap-y-2 text-right text-sm sm:grid-cols-4"><p><span class="block text-xs text-slate-500">Registros de continuidad</span><strong class="text-slate-900"><?= number_format((int) $periodo['continuidad']) ?></strong></p><p><span class="block text-xs text-slate-500">Registros de presión</span><strong class="text-slate-900"><?= number_format((int) $periodo['presion']) ?></strong></p><p><span class="block text-xs text-slate-500">Zonas con conexiones</span><strong class="text-slate-900"><?= number_format((int) $periodo['zonas_con_conexiones']) ?></strong></p><p><span class="block text-xs text-slate-500">Conexiones activas</span><strong class="text-slate-900"><?= number_format((int) $periodo['conexiones']) ?></strong></p></div></div>
-<?php if ($tieneResultados): ?><div class="mt-5 grid gap-3 border-t border-slate-100 pt-4 sm:grid-cols-2"><div class="rounded-lg bg-slate-50 px-4 py-3"><span class="text-xs text-slate-500">Resultado de continuidad</span><strong class="ml-2 text-slate-900"><?= number_es((float) $periodo['resultado_continuidad']) ?> h/día</strong></div><div class="rounded-lg bg-slate-50 px-4 py-3"><span class="text-xs text-slate-500">Resultado de presión</span><strong class="ml-2 text-slate-900"><?= number_es((float) $periodo['resultado_presion']) ?> m.c.a.</strong></div></div><?php endif; ?>
-<div class="mt-5 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4"><a href="<?= e(url('/revision/detalle') . '&periodo=' . (int) $periodo['id']) ?>" class="button-secondary"><i class="bi bi-eye" aria-hidden="true"></i> Revisar datos</a><?php if ($periodo['estado'] === 'aprobado' && !$tieneResultados): ?><a href="<?= e(url('/resultados')) ?>" class="button-primary"><i class="bi bi-calculator" aria-hidden="true"></i> Calcular resultados</a><span class="text-xs text-slate-500">Debes generar ambos resultados antes de cerrar.</span><?php endif; ?><?php if ($acciones[$periodo['estado']] === []): ?><span class="text-sm text-slate-500"><i class="bi bi-shield-lock mr-2 text-brand-600" aria-hidden="true"></i>Período cerrado.</span><?php else: ?><?php foreach ($acciones[$periodo['estado']] as [$estadoDestino, $etiqueta, $icono]): ?><?php if ($estadoDestino === 'cerrado' && !$tieneResultados) { continue; } ?><form method="post" action="<?= e(url('/revision')) ?>" class="form-cambio-estado"><input type="hidden" name="token" value="<?= e($tokenFormulario) ?>"><input type="hidden" name="periodo_id" value="<?= (int) $periodo['id'] ?>"><input type="hidden" name="estado" value="<?= e($estadoDestino) ?>"><input type="hidden" name="motivo" value=""><button class="<?= $estadoDestino === 'borrador' ? 'button-secondary' : 'button-primary' ?>" type="submit" data-requiere-motivo="<?= $estadoDestino === 'borrador' ? 'true' : 'false' ?>"><i class="bi <?= e($icono) ?>" aria-hidden="true"></i><?= e($etiqueta) ?></button></form><?php endforeach; ?><?php endif; ?></div>
-</article><?php endforeach; ?></section>
+<section class="panel mt-6">
+    <div class="mb-5 flex flex-wrap items-start justify-between gap-4">
+        <div>
+            <h2 class="section-title">Períodos para revisión</h2>
+            <p class="mt-1 text-sm text-slate-500">Revisa la cobertura, los resultados calculados y ejecuta la acción que corresponde a cada período.</p>
+        </div>
+        <span class="badge"><i class="bi bi-calendar3" aria-hidden="true"></i><?= number_format(count($periodos)) ?> períodos</span>
+    </div>
+    <div>
+        <table class="data-table min-w-[1280px]" data-search-placeholder="Buscar período o estado...">
+            <caption class="sr-only">Períodos disponibles para revisión y cierre</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Período</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col" class="text-right">Registros</th>
+                    <th scope="col" class="text-right">Zonas con conexiones</th>
+                    <th scope="col" class="text-right">Conexiones activas</th>
+                    <th scope="col" class="text-right">Continuidad</th>
+                    <th scope="col" class="text-right">Presión</th>
+                    <th scope="col" class="text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($periodos as $periodo):
+                    $tieneResultados = $periodo['resultado_continuidad'] !== null && $periodo['resultado_presion'] !== null;
+                    $estado = $periodo['estado'];
+                ?>
+                    <tr>
+                        <th scope="row" class="font-semibold text-slate-900"><?= e($meses[(int) $periodo['mes']] . ' ' . $periodo['anio']) ?></th>
+                        <td><span class="status-chip estado-<?= e($estado) ?>"><?= e($nombresEstado[$estado]) ?></span></td>
+                        <td class="text-right tabular-nums"><span class="font-semibold text-slate-900"><?= number_format((int) $periodo['continuidad']) ?></span><span class="text-slate-400"> / </span><span class="font-semibold text-slate-900"><?= number_format((int) $periodo['presion']) ?></span><span class="ml-1 text-xs text-slate-500">C / P</span></td>
+                        <td class="text-right font-semibold tabular-nums text-slate-900"><?= number_format((int) $periodo['zonas_con_conexiones']) ?></td>
+                        <td class="text-right font-semibold tabular-nums text-slate-900"><?= number_format((int) $periodo['conexiones']) ?></td>
+                        <td class="text-right font-semibold tabular-nums text-slate-900"><?= $periodo['resultado_continuidad'] === null ? '—' : number_es((float) $periodo['resultado_continuidad']) . ' h/día' ?></td>
+                        <td class="text-right font-semibold tabular-nums text-slate-900"><?= $periodo['resultado_presion'] === null ? '—' : number_es((float) $periodo['resultado_presion']) . ' m.c.a.' ?></td>
+                        <td>
+                            <div class="flex flex-wrap justify-end gap-2">
+                                <a href="<?= e(url('/revision/detalle') . '&periodo=' . (int) $periodo['id']) ?>" class="button-secondary"><i class="bi bi-eye" aria-hidden="true"></i>Revisar</a>
+                                <?php if ($estado === 'aprobado' && !$tieneResultados): ?>
+                                    <a href="<?= e(url('/resultados')) ?>" class="button-primary"><i class="bi bi-calculator" aria-hidden="true"></i>Calcular</a>
+                                <?php endif; ?>
+                                <?php foreach ($acciones[$estado] as [$estadoDestino, $etiqueta, $icono]): ?>
+                                    <?php if ($estadoDestino === 'cerrado' && !$tieneResultados) { continue; } ?>
+                                    <form method="post" action="<?= e(url('/revision')) ?>" class="form-cambio-estado">
+                                        <input type="hidden" name="token" value="<?= e($tokenFormulario) ?>">
+                                        <input type="hidden" name="periodo_id" value="<?= (int) $periodo['id'] ?>">
+                                        <input type="hidden" name="estado" value="<?= e($estadoDestino) ?>">
+                                        <input type="hidden" name="motivo" value="">
+                                        <button class="<?= $estadoDestino === 'borrador' ? 'button-secondary' : 'button-primary' ?>" type="submit" data-requiere-motivo="<?= $estadoDestino === 'borrador' ? 'true' : 'false' ?>"><i class="bi <?= e($icono) ?>" aria-hidden="true"></i><?= e($etiqueta) ?></button>
+                                    </form>
+                                <?php endforeach; ?>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
