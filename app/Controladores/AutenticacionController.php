@@ -45,7 +45,7 @@ final class AutenticacionController
             ServicioAutenticacion::iniciar($correo, $contrasena);
             Sesion::mensaje('exito', 'Administrador creado correctamente.');
             $this->redirigir('/');
-        } catch (\Throwable) {
+        } catch (\Throwable $error) {
             Sesion::mensaje('error', 'No se pudo crear el administrador. Verifica que el correo no esté registrado.');
             $this->redirigir('/instalacion');
         }

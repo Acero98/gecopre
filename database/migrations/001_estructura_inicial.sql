@@ -271,6 +271,12 @@ INSERT INTO indicadores (codigo, nombre, unidad) VALUES
     ('continuidad', 'Continuidad', 'horas por día'),
     ('presion', 'Presión', 'm.c.a.');
 
+INSERT INTO metas_indicador (indicador_id, ambito, referencia, valor, vigente_desde) VALUES
+    ((SELECT id FROM indicadores WHERE codigo = 'continuidad'), 'localidad', 'SUNASS 2026', 17.0000, '2026-01-01'),
+    ((SELECT id FROM indicadores WHERE codigo = 'continuidad'), 'eps', 'EPS ILO 2026', 19.2000, '2026-01-01'),
+    ((SELECT id FROM indicadores WHERE codigo = 'presion'), 'localidad', 'SUNASS 2026', 28.0000, '2026-01-01'),
+    ((SELECT id FROM indicadores WHERE codigo = 'presion'), 'eps', 'EPS ILO 2026', 28.0000, '2026-01-01');
+
 INSERT INTO roles (nombre, descripcion) VALUES
     ('Administrador', 'Administra catálogos, usuarios, reglas y cierres.'),
     ('Operador', 'Registra mediciones y conexiones en su ámbito asignado.'),

@@ -6,6 +6,8 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Repositorios\RepositorioCatalogo;
 use App\Repositorios\RepositorioMediciones;
+use App\Repositorios\RepositorioResultados;
+use App\Servicios\ServicioPrediccion;
 
 final class ModuloController
 {
@@ -29,22 +31,63 @@ final class ModuloController
 
     public function connections(): void
     {
-        $this->module('/conexiones', 'Conexiones activas', 'diagram-3', 'Una única base de conexiones para continuidad y presión.', [
-            'Registro por zona de presión y período', 'Validación de cantidades y datos faltantes', 'Historial de cambios y responsable',
+        $repositorio = new RepositorioMediciones();
+        View::render('connections/index', [
+            'title' => 'Conexiones activas',
+            'active' => '/conexiones',
+            'resumen' => $repositorio->resumenConexiones(),
+            'zonasPresion' => $repositorio->zonasPresionActivas(),
+            'conexiones' => $repositorio->conexionesRecientes(),
+            'mesPredeterminado' => $repositorio->siguienteMesDisponible(),
+            'recursos' => [
+                'css' => ['simple-datatables.css', 'tom-select.css'],
+                'js' => ['simple-datatables.js', 'tom-select.complete.min.js', 'sweetalert2.all.min.js'],
+            ],
         ]);
     }
 
     public function review(): void
     {
-        $this->module('/revision', 'Revisión y cierre', 'clipboard-check', 'Un flujo claro antes de publicar los resultados del mes.', [
-            'Borrador → en revisión → aprobado → cerrado', 'Devolución con observaciones al operador', 'Reaperturas justificadas y resultados versionados',
+        View::render('review/index', [
+            'title' => 'Revisión y cierre',
+            'active' => '/revision',
+            'periodos' => (new RepositorioMediciones())->periodosParaRevision(),
+            'recursos' => [
+                'js' => ['sweetalert2.all.min.js'],
+            ],
+        ]);
+    }
+
+    public function reviewDetail(): void
+    {
+        $periodoId = filter_input(INPUT_GET, 'periodo', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($periodoId === false || $periodoId === null) {
+            header('Location: ' . url('/revision'));
+            exit;
+        }
+        $repositorio = new RepositorioMediciones();
+        $periodo = $repositorio->detallePeriodoRevision($periodoId);
+        if ($periodo === null) {
+            header('Location: ' . url('/revision'));
+            exit;
+        }
+        View::render('review/detail', [
+            'title' => 'Detalle de revisión',
+            'active' => '/revision',
+            'periodo' => $periodo,
+            'mediciones' => $repositorio->medicionesDePeriodo($periodoId),
+            'conexiones' => $repositorio->conexionesDePeriodo($periodoId),
         ]);
     }
 
     public function forecasts(): void
     {
-        $this->module('/predicciones', 'Predicciones', 'graph-up-arrow', 'Estimaciones de continuidad y presión a uno o dos meses.', [
-            'Fecha de corte y horizonte explícitos', 'Comparación de métodos con pruebas históricas', 'Estimación, error y supuestos separados de los datos reales',
+        $serie = (new RepositorioResultados())->serieOficial();
+        View::render('forecasts/index', [
+            'title' => 'Predicciones',
+            'active' => '/predicciones',
+            'serie' => $serie,
+            'predicciones' => (new ServicioPrediccion())->generar($serie),
         ]);
     }
 

@@ -16,7 +16,14 @@ final class View
         $mensaje = \App\Core\Sesion::tomarMensaje();
         $tokenFormulario = \App\Core\ProteccionFormulario::token();
         extract($data, EXTR_SKIP);
-        $recursos = $data['recursos'] ?? ['css' => [], 'js' => []];
+        $recursosVista = is_array($data['recursos'] ?? null) ? $data['recursos'] : [];
+        $recursosBase = $layout === 'layouts/main'
+            ? ['css' => ['simple-datatables.css'], 'js' => ['simple-datatables.js']]
+            : ['css' => [], 'js' => []];
+        $recursos = [
+            'css' => array_values(array_unique(array_merge($recursosBase['css'], $recursosVista['css'] ?? []))),
+            'js' => array_values(array_unique(array_merge($recursosBase['js'], $recursosVista['js'] ?? []))),
+        ];
         $navigation = require BASE_PATH . '/config/navegacion.php';
         ob_start();
         require $file;

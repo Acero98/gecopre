@@ -18,7 +18,7 @@ final class CargadorEntorno
 
         foreach ($lineas as $linea) {
             $linea = trim($linea);
-            if ($linea === '' || str_starts_with($linea, '#') || !str_contains($linea, '=')) {
+            if ($linea === '' || substr($linea, 0, 1) === '#' || strpos($linea, '=') === false) {
                 continue;
             }
 
@@ -30,7 +30,7 @@ final class CargadorEntorno
                 continue;
             }
 
-            if ((str_starts_with($valor, '"') && str_ends_with($valor, '"')) || (str_starts_with($valor, "'") && str_ends_with($valor, "'"))) {
+            if ((substr($valor, 0, 1) === '"' && substr($valor, -1) === '"') || (substr($valor, 0, 1) === "'" && substr($valor, -1) === "'")) {
                 $valor = substr($valor, 1, -1);
             }
 

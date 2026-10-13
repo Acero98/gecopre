@@ -9,11 +9,11 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="<?= e(asset('css/inter.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('icons/bootstrap-icons.css')) ?>">
-    <?php foreach ($recursos['css'] as $hojaEstilo): ?>
+    <?php foreach (($recursos['css'] ?? []) as $hojaEstilo): ?>
         <link rel="stylesheet" href="<?= e(asset('css/' . $hojaEstilo)) ?>">
     <?php endforeach; ?>
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
-    <?php foreach ($recursos['js'] as $script): ?><script defer src="<?= e(asset('js/' . $script)) ?>"></script>
+    <?php foreach (($recursos['js'] ?? []) as $script): ?><script defer src="<?= e(asset('js/' . $script)) ?>"></script>
     <?php endforeach; ?>
     <script defer src="<?= e(asset('js/app.js')) ?>"></script>
 </head>
@@ -34,9 +34,12 @@
                 <p class="nav-section-label mb-3 px-3 text-[11px] font-semibold tracking-widest text-slate-400">GESTIÓN DEL SERVICIO</p>
                 <div class="flex flex-wrap gap-1 lg:flex-col">
                     <?php foreach ($navigation as $item): ?>
-                        <a href="<?= e(url($item['path'])) ?>" aria-label="<?= e($item['label']) ?>" data-tooltip="<?= e($item['label']) ?>" class="nav-item <?= $active === $item['path'] ? 'nav-active' : '' ?>" <?= $active === $item['path'] ? 'aria-current="page"' : '' ?>>
-                            <i class="bi bi-<?= e($item['icon']) ?> text-lg" aria-hidden="true"></i><span class="nav-label"><?= e($item['label']) ?></span>
-                        </a>
+                        <div class="nav-group">
+                            <a href="<?= e(url($item['path'])) ?>" aria-label="<?= e($item['label']) ?>" data-tooltip="<?= e($item['label']) ?>" class="nav-item <?= $active === $item['path'] ? 'nav-active' : '' ?>" <?= $active === $item['path'] ? 'aria-current="page"' : '' ?>>
+                                <i class="bi bi-<?= e($item['icon']) ?> text-lg" aria-hidden="true"></i><span class="nav-label"><?= e($item['label']) ?></span>
+                            </a>
+                            <?php if ($active === $item['path'] && isset($item['subsecciones'])): ?><div class="nav-subitems" aria-label="Subsecciones de <?= e($item['label']) ?>"><?php foreach ($item['subsecciones'] as $subseccion): $subseccionActiva = ($indicadorSeleccionado ?? null) === $subseccion['indicador']; ?><a href="<?= e(url($item['path']) . '&indicador=' . rawurlencode($subseccion['indicador'])) ?>" class="nav-subitem <?= $subseccionActiva ? 'nav-subitem-active' : '' ?>" <?= $subseccionActiva ? 'aria-current="page"' : '' ?>><i class="bi bi-<?= e($subseccion['icon']) ?>" aria-hidden="true"></i><span><?= e($subseccion['label']) ?></span></a><?php endforeach; ?></div><?php endif; ?>
+                        </div>
                     <?php endforeach; ?>
                 </div>
             </nav>
@@ -46,7 +49,7 @@
             </div>
         </aside>
         <div class="min-w-0">
-            <header class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-5 py-4 lg:px-9">
+            <header class="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur lg:px-9">
                 <p class="text-sm"><span class="text-slate-400">Gestión del servicio</span><span class="mx-3 text-slate-300">/</span><span class="font-medium text-slate-700"><?= e($title) ?></span></p>
                 <?php if ($usuario !== null): ?>
                     <div class="flex items-center gap-3"><span class="hidden text-right sm:block"><span class="block text-sm font-semibold text-slate-800"><?= e($usuario['nombres'] . ' ' . $usuario['apellidos']) ?></span><span class="block text-xs text-slate-500"><?= e($usuario['roles']) ?></span></span>
@@ -55,12 +58,12 @@
                 <?php endif; ?>
             </header>
             <main id="main" class="w-full px-4 py-6 sm:px-6 lg:px-8 lg:py-8 xl:px-10"><?= $content ?></main>
-            <footer class="mx-4 border-t border-slate-200 py-5 text-xs text-slate-500 sm:mx-6 lg:mx-8 xl:mx-10">GECOPRE · Catálogo inicial conectado a MySQL. Mediciones mensuales pendientes de carga.</footer>
+            <footer class="mx-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 py-5 text-xs text-slate-500 sm:mx-6 lg:mx-8 xl:mx-10"><span>GECOPRE · Gestión de continuidad y presión</span><span>EPS Ilo S.A. · <?= date('Y') ?></span></footer>
         </div>
     </div>
     <dialog id="app-alert" class="w-[calc(100%-2rem)] max-w-md rounded-2xl border-0 bg-white p-0 text-slate-700 shadow-xl backdrop:bg-slate-900/40" aria-labelledby="alert-title" aria-describedby="alert-message">
         <div class="p-6">
-            <div class="mb-4 flex size-11 items-center justify-center rounded-full bg-teal-50 text-xl text-teal-700"><i class="bi bi-info-circle" aria-hidden="true"></i></div>
+            <div class="mb-4 flex size-11 items-center justify-center rounded-full bg-slate-100 text-xl text-brand-600"><i class="bi bi-info-circle" aria-hidden="true"></i></div>
             <h2 id="alert-title" class="text-lg font-semibold text-slate-900">Información</h2>
             <p id="alert-message" class="mt-3 text-sm leading-6"></p>
             <form method="dialog" class="mt-6 flex justify-end"><button class="button-primary">Entendido</button></form>

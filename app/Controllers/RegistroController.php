@@ -32,7 +32,7 @@ final class RegistroController
             Sesion::mensaje('exito', 'La medición se guardó correctamente en borrador.');
         } catch (\DomainException $error) {
             Sesion::mensaje('error', $error->getMessage());
-        } catch (\Throwable) {
+        } catch (\Throwable $error) {
             Sesion::mensaje('error', 'No se pudo guardar la medición. Inténtalo nuevamente.');
         }
         $this->redirigir();

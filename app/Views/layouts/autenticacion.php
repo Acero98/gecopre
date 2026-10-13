@@ -18,7 +18,7 @@
 </main>
 <?php if ($mensaje !== null): ?>
 <dialog id="app-alert" data-auto-open="true" class="w-[calc(100%-2rem)] max-w-md rounded-2xl border-0 bg-white p-0 text-slate-700 shadow-xl backdrop:bg-slate-900/40" aria-labelledby="alert-title" aria-describedby="alert-message">
-    <div class="p-6"><div class="mb-4 flex size-11 items-center justify-center rounded-full <?= $mensaje['tipo'] === 'error' ? 'bg-red-50 text-red-700' : 'bg-teal-50 text-teal-700' ?> text-xl"><i class="bi <?= $mensaje['tipo'] === 'error' ? 'bi-exclamation-circle' : 'bi-check-circle' ?>" aria-hidden="true"></i></div><h2 id="alert-title" class="text-lg font-semibold text-slate-900"><?= $mensaje['tipo'] === 'error' ? 'No se pudo completar la acción' : 'Operación realizada' ?></h2><p id="alert-message" class="mt-3 text-sm leading-6"><?= e($mensaje['texto']) ?></p><form method="dialog" class="mt-6 flex justify-end"><button class="button-primary">Entendido</button></form></div>
+    <div class="p-6"><div class="mb-4 flex size-11 items-center justify-center rounded-full bg-slate-100 <?= $mensaje['tipo'] === 'error' ? 'text-red-700' : 'text-brand-600' ?> text-xl"><i class="bi <?= $mensaje['tipo'] === 'error' ? 'bi-exclamation-circle' : 'bi-check-circle' ?>" aria-hidden="true"></i></div><h2 id="alert-title" class="text-lg font-semibold text-slate-900"><?= $mensaje['tipo'] === 'error' ? 'No se pudo completar la acción' : 'Operación realizada' ?></h2><p id="alert-message" class="mt-3 text-sm leading-6"><?= e($mensaje['texto']) ?></p><form method="dialog" class="mt-6 flex justify-end"><button class="button-primary">Entendido</button></form></div>
 </dialog>
 <?php endif; ?>
 </body>

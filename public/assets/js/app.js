@@ -74,21 +74,29 @@ if (alertDialog && alertDialog.dataset.autoOpen === 'true' && typeof alertDialog
     alertDialog.showModal();
 }
 
-const tablaMediciones = document.getElementById('tabla-mediciones');
-if (tablaMediciones && window.simpleDatatables) {
-    new window.simpleDatatables.DataTable(tablaMediciones, {
-        perPage: 10,
-        perPageSelect: [10, 20, 50],
-        searchable: true,
+function crearTablaDatos(tabla) {
+    if (!tabla || !window.simpleDatatables || tabla.dataset.datatableInicializada === 'true') return;
+    const registros = tabla.tBodies[0]?.rows.length || 0;
+    const tieneBusqueda = tabla.dataset.searchable !== 'false' && registros > 5;
+    const tienePaginacion = tabla.dataset.paging !== 'false' && registros > 10;
+    tabla.dataset.datatableInicializada = 'true';
+    new window.simpleDatatables.DataTable(tabla, {
+        perPage: Number(tabla.dataset.perPage || 10),
+        perPageSelect: tienePaginacion ? [10, 20, 50, 100] : false,
+        paging: tienePaginacion,
+        searchable: tieneBusqueda,
+        fixedHeight: false,
         labels: {
-            placeholder: 'Buscar medición...',
+            placeholder: tabla.dataset.searchPlaceholder || 'Buscar...',
             perPage: 'Registros por página',
-            noRows: 'No hay mediciones para mostrar.',
-            noResults: 'No se encontraron mediciones.',
-            info: 'Mostrando {start} a {end} de {rows} mediciones',
+            noRows: 'No hay registros para mostrar.',
+            noResults: 'No se encontraron resultados.',
+            info: 'Mostrando {start} a {end} de {rows} registros',
         },
     });
 }
+
+document.querySelectorAll('table.data-table').forEach(crearTablaDatos);
 
 const puntoControl = document.getElementById('punto-control');
 if (puntoControl && window.TomSelect) {
@@ -99,6 +107,17 @@ if (puntoControl && window.TomSelect) {
         placeholder: 'Busca y selecciona un punto de control',
     });
     selectorPunto.clear(true);
+}
+
+const zonaPresion = document.getElementById('zona-presion');
+if (zonaPresion && window.TomSelect) {
+    const selectorZona = new window.TomSelect(zonaPresion, {
+        create: false,
+        allowEmptyOption: true,
+        maxOptions: 100,
+        placeholder: 'Busca y selecciona una zona de presión',
+    });
+    selectorZona.clear(true);
 }
 
 const indicadorRegistro = document.getElementById('indicador-registro');
@@ -133,3 +152,27 @@ if (flashMessage && window.Swal) {
         confirmButtonColor: '#1768bb',
     });
 }
+
+document.querySelectorAll('.form-cambio-estado').forEach(formulario => {
+    formulario.addEventListener('submit', async evento => {
+        const boton = evento.submitter;
+        if (!boton || boton.dataset.requiereMotivo !== 'true') return;
+        evento.preventDefault();
+        if (!window.Swal) return;
+        const respuesta = await window.Swal.fire({
+            title: 'Indica el motivo',
+            input: 'textarea',
+            inputPlaceholder: 'Describe el motivo de la devolución o reapertura',
+            inputAttributes: { maxlength: 500, 'aria-label': 'Motivo' },
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#1768bb',
+            inputValidator: valor => !valor.trim() ? 'El motivo es obligatorio.' : undefined,
+        });
+        if (respuesta.isConfirmed) {
+            formulario.querySelector('input[name="motivo"]').value = respuesta.value.trim();
+            formulario.submit();
+        }
+    });
+});
