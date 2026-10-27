@@ -74,7 +74,7 @@
             <form method="dialog" class="mt-6 flex justify-end"><button class="button-primary">Entendido</button></form>
         </div>
     </dialog>
-    <?php if ($mensaje !== null): ?><span id="flash-message" hidden data-type="<?= e($mensaje['tipo']) ?>" data-message="<?= e($mensaje['texto']) ?>"></span><?php endif; ?>
+    <?php if ($mensaje !== null): ?><span id="flash-message" hidden data-type="<?= e($mensaje['tipo']) ?>" data-title="<?= e($mensaje['titulo'] ?? '') ?>" data-message="<?= e($mensaje['texto']) ?>"></span><?php endif; ?>
 </body>
 
 </html>

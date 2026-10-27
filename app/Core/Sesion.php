@@ -43,9 +43,9 @@ final class Sesion
         session_regenerate_id(true);
     }
 
-    public static function mensaje(string $tipo, string $texto): void
+    public static function mensaje(string $tipo, string $texto, ?string $titulo = null): void
     {
-        $_SESSION['mensaje'] = ['tipo' => $tipo, 'texto' => $texto];
+        $_SESSION['mensaje'] = ['tipo' => $tipo, 'texto' => $texto, 'titulo' => $titulo];
     }
 
     public static function tomarMensaje(): ?array

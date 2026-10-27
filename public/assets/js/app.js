@@ -146,12 +146,67 @@ const flashMessage = document.getElementById('flash-message');
 if (flashMessage && window.Swal) {
     window.Swal.fire({
         icon: flashMessage.dataset.type === 'error' ? 'error' : 'success',
-        title: flashMessage.dataset.type === 'error' ? 'No se pudo completar la acción' : 'Operación realizada',
+        title: flashMessage.dataset.title || (flashMessage.dataset.type === 'error' ? 'No se pudo completar la acción' : 'Operación realizada'),
         text: flashMessage.dataset.message,
         confirmButtonText: 'Entendido',
         confirmButtonColor: '#1768bb',
     });
 }
+
+const formularioImportarUbicaciones = document.getElementById('form-importar-ubicaciones');
+if (formularioImportarUbicaciones) {
+    formularioImportarUbicaciones.addEventListener('submit', evento => {
+        if (!formularioImportarUbicaciones.reportValidity()) return;
+        const boton = document.getElementById('boton-importar-ubicaciones');
+        if (boton) {
+            boton.disabled = true;
+            boton.setAttribute('aria-busy', 'true');
+            boton.querySelector('span').textContent = 'Importando…';
+        }
+        if (!window.Swal) return;
+        evento.preventDefault();
+        window.Swal.fire({
+            title: 'Importando ubicaciones',
+            html: '<p class="text-sm text-slate-600">Cargando y validando el archivo Excel.</p><div class="import-progress" aria-label="Importación en proceso"><span></span></div><p class="mt-3 text-xs text-slate-500">No cierres esta ventana.</p>',
+            showConfirmButton: false,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => window.setTimeout(() => formularioImportarUbicaciones.submit(), 120),
+        });
+    });
+}
+
+document.querySelectorAll('input[data-imagen-referencia]').forEach(input => {
+    input.addEventListener('change', () => {
+        const etiqueta = input.closest('label')?.querySelector('[data-nombre-imagen]');
+        if (etiqueta) etiqueta.textContent = input.files?.[0]?.name || 'Sin foto nueva seleccionada';
+    });
+});
+
+document.querySelectorAll('.form-guardar-ubicacion').forEach(formulario => {
+    formulario.addEventListener('submit', evento => {
+        if (!formulario.reportValidity()) return;
+        const boton = formulario.querySelector('button[type="submit"]');
+        if (boton) {
+            boton.disabled = true;
+            boton.setAttribute('aria-busy', 'true');
+            boton.querySelector('span').textContent = 'Guardando…';
+        }
+        if (!window.Swal) return;
+        evento.preventDefault();
+        window.Swal.fire({
+            title: 'Guardando punto',
+            text: 'Se están actualizando la ubicación y la foto de referencia.',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                window.Swal.showLoading();
+                window.setTimeout(() => formulario.submit(), 120);
+            },
+        });
+    });
+});
 
 document.querySelectorAll('.form-cambio-estado').forEach(formulario => {
     formulario.addEventListener('submit', async evento => {

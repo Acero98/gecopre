@@ -5,3 +5,5 @@
 !/storage/logs/.gitkeep
 /storage/importaciones/*
 !/storage/importaciones/.gitkeep
+/public/uploads/referencias/*
+!/public/uploads/referencias/.gitkeep

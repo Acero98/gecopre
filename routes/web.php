@@ -26,6 +26,8 @@ $router->post('/resultados/calcular', [ResultadoController::class, 'calcular'], 
 $router->get('/mapa-presion', [MapaPresionController::class, 'index'], true);
 $router->get('/mapa-presion/ubicaciones', [MapaPresionController::class, 'ubicaciones'], true);
 $router->post('/mapa-presion/ubicaciones', [MapaPresionController::class, 'guardarUbicacion'], true);
+$router->get('/mapa-presion/ubicaciones/plantilla', [MapaPresionController::class, 'descargarPlantillaUbicaciones'], true);
+$router->post('/mapa-presion/ubicaciones/importar', [MapaPresionController::class, 'importarUbicaciones'], true);
 $router->get('/registros', [ModuloController::class, 'records'], true);
 $router->post('/registros', [RegistroController::class, 'guardar'], true);
 $router->get('/conexiones', [ModuloController::class, 'connections'], true);
