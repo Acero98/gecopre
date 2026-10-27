@@ -17,14 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const capasBase = {};
     if (claveMapTiler) {
         const claveCodificada = encodeURIComponent(claveMapTiler);
-        capasBase['Satélite'] = window.L.tileLayer(`https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.png?key=${claveCodificada}`, {
+        const opcionesMapa = {
             maxZoom: 20,
             attribution: '© MapTiler © OpenStreetMap contributors'
-        }).addTo(mapa);
-        capasBase['Plano'] = window.L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${claveCodificada}`, {
-            maxZoom: 20,
-            attribution: '© MapTiler © OpenStreetMap contributors'
-        });
+        };
+        capasBase['Híbrido'] = window.L.tileLayer(`https://api.maptiler.com/maps/hybrid-v4/{z}/{x}/{y}.png?key=${claveCodificada}`, opcionesMapa).addTo(mapa);
+        capasBase['Satélite'] = window.L.tileLayer(`https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.png?key=${claveCodificada}`, opcionesMapa);
+        capasBase['Plano'] = window.L.tileLayer(`https://api.maptiler.com/maps/streets-v4/{z}/{x}/{y}.png?key=${claveCodificada}`, opcionesMapa);
+        capasBase['Datos'] = window.L.tileLayer(`https://api.maptiler.com/maps/dataviz-v4/{z}/{x}/{y}.png?key=${claveCodificada}`, opcionesMapa);
     } else {
         capasBase['Satélite (temporal)'] = window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             maxZoom: 19,
